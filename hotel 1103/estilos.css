@@ -1,0 +1,1207 @@
+/* =========================================
+   CONFIGURACIÓN GENERAL
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f5f0;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.header {
+    width: 100%;
+    height: 82px;
+
+    background: #102a43;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 7%;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+
+.logo {
+    font-size: 24px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+}
+
+
+.logo span {
+    color: #d7ad54;
+}
+
+
+nav {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+}
+
+
+nav a {
+    color: white;
+
+    font-size: 14px;
+
+    transition: 0.3s;
+}
+
+
+nav a:hover {
+    color: #d7ad54;
+}
+
+
+.btn-reserva {
+    background: #d7ad54;
+
+    padding: 12px 20px;
+
+    border-radius: 5px;
+
+    color: #102a43 !important;
+
+    font-weight: bold;
+}
+
+
+.btn-reserva:hover {
+    background: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.boton {
+    display: inline-block;
+
+    background: #102a43;
+
+    color: white;
+
+    padding: 14px 25px;
+
+    border-radius: 5px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+
+    border: none;
+
+    cursor: pointer;
+}
+
+
+.boton:hover {
+    background: #d7ad54;
+
+    color: #102a43;
+
+    transform: translateY(-3px);
+}
+
+
+.boton-dorado {
+    background: #d7ad54;
+
+    color: #102a43;
+}
+
+
+.oscuro {
+    background: #102a43;
+}
+
+
+/* =========================================
+   PORTADA
+========================================= */
+
+.hero {
+
+    min-height: 700px;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0,0,0,0.48),
+            rgba(0,0,0,0.48)
+        ),
+
+        url("https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=2000&q=85");
+
+    background-size: cover;
+
+    background-position: center;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 80px 8%;
+
+    color: white;
+}
+
+
+.hero-contenido {
+    max-width: 750px;
+}
+
+
+.pequeno {
+    color: #d7ad54;
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 20px;
+}
+
+
+.hero h1 {
+    font-family: Georgia, serif;
+
+    font-size: clamp(45px, 6vw, 80px);
+
+    line-height: 1.05;
+
+    margin-bottom: 25px;
+}
+
+
+.hero p {
+    font-size: 19px;
+
+    line-height: 1.7;
+
+    max-width: 600px;
+
+    margin-bottom: 35px;
+}
+
+
+.hero-botones {
+    display: flex;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+
+/* =========================================
+   BIENVENIDA
+========================================= */
+
+.bienvenida {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 110px 30px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 70px;
+
+    align-items: center;
+}
+
+
+.texto h2 {
+    font-family: Georgia, serif;
+
+    font-size: 48px;
+
+    color: #102a43;
+
+    margin-bottom: 25px;
+}
+
+
+.texto p {
+    line-height: 1.8;
+
+    color: #666;
+
+    margin-bottom: 30px;
+}
+
+
+.subtitulo {
+
+    color: #b28735;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 15px;
+}
+
+
+.imagen-bienvenida img {
+
+    height: 480px;
+
+    object-fit: cover;
+
+    border-radius: 5px;
+}
+
+
+/* =========================================
+   DESTACADOS
+========================================= */
+
+.destacados {
+
+    background: white;
+
+    text-align: center;
+
+    padding: 100px 7%;
+}
+
+
+.destacados h2 {
+
+    font-family: Georgia, serif;
+
+    color: #102a43;
+
+    font-size: 45px;
+
+    margin-bottom: 60px;
+}
+
+
+.destacados-grid {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(4,1fr);
+
+    gap: 30px;
+}
+
+
+.destacados-grid div {
+
+    padding: 35px 20px;
+
+    border-bottom: 2px solid #d7ad54;
+
+    transition: 0.3s;
+}
+
+
+.destacados-grid div:hover {
+
+    transform: translateY(-8px);
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+
+.destacados-grid span {
+
+    font-size: 40px;
+}
+
+
+.destacados-grid h3 {
+
+    margin: 15px 0;
+
+    color: #102a43;
+}
+
+
+.destacados-grid p {
+
+    color: #777;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   LLAMADA FINAL
+========================================= */
+
+.llamada {
+
+    text-align: center;
+
+    padding: 100px 20px;
+
+    background:
+
+        linear-gradient(
+            rgba(16,42,67,0.9),
+            rgba(16,42,67,0.9)
+        ),
+
+        url("https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1800&q=80");
+
+    background-size: cover;
+
+    background-position: center;
+
+    color: white;
+}
+
+
+.llamada h2 {
+
+    font-family: Georgia, serif;
+
+    font-size: 45px;
+
+    margin-bottom: 15px;
+}
+
+
+.llamada p {
+
+    margin-bottom: 30px;
+
+    font-size: 18px;
+}
+
+
+/* =========================================
+   TÍTULOS DE PÁGINAS
+========================================= */
+
+.titulo-pagina {
+
+    text-align: center;
+
+    padding: 100px 20px;
+
+    background: #102a43;
+
+    color: white;
+}
+
+
+.titulo-pagina p {
+
+    color: #d7ad54;
+
+    letter-spacing: 3px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+
+.titulo-pagina h1 {
+
+    font-family: Georgia, serif;
+
+    font-size: 55px;
+
+    margin-bottom: 15px;
+}
+
+
+.titulo-pagina span {
+
+    color: #d9e2ec;
+
+    font-size: 17px;
+}
+
+
+/* =========================================
+   HABITACIONES
+========================================= */
+
+.habitaciones {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 80px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 45px;
+}
+
+
+.habitacion {
+
+    background: white;
+
+    display: grid;
+
+    grid-template-columns: 45% 55%;
+
+    min-height: 380px;
+
+    box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    transition: 0.3s;
+}
+
+
+.habitacion:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.13);
+}
+
+
+.foto {
+
+    position: relative;
+}
+
+
+.foto img {
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.oferta {
+
+    position: absolute;
+
+    top: 20px;
+
+    left: 20px;
+
+    background: #d7ad54;
+
+    color: #102a43;
+
+    padding: 9px 15px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.habitacion-info {
+
+    padding: 45px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.categoria {
+
+    color: #b28735;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+
+.habitacion-info h2 {
+
+    font-family: Georgia, serif;
+
+    color: #102a43;
+
+    font-size: 35px;
+
+    margin-bottom: 15px;
+}
+
+
+.habitacion-info > p {
+
+    color: #666;
+
+    line-height: 1.7;
+
+    margin-bottom: 25px;
+}
+
+
+.caracteristicas {
+
+    display: flex;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 30px;
+}
+
+
+.caracteristicas span {
+
+    background: #f4f1e9;
+
+    padding: 8px 12px;
+
+    border-radius: 4px;
+
+    font-size: 13px;
+}
+
+
+.precio {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.precio small {
+
+    color: #888;
+}
+
+
+.precio strong {
+
+    color: #102a43;
+
+    font-size: 28px;
+
+    margin: 0 5px;
+}
+
+
+/* =========================================
+   SERVICIOS
+========================================= */
+
+.servicios-grid {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 80px 20px;
+
+    display: grid;
+
+    grid-template-columns: repeat(3,1fr);
+
+    gap: 30px;
+}
+
+
+.servicio {
+
+    background: white;
+
+    overflow: hidden;
+
+    border-radius: 6px;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+
+    transition: 0.3s;
+}
+
+
+.servicio:hover {
+
+    transform: translateY(-8px);
+}
+
+
+.servicio img {
+
+    height: 220px;
+
+    object-fit: cover;
+}
+
+
+.servicio div {
+
+    padding: 30px;
+}
+
+
+.servicio span {
+
+    font-size: 30px;
+}
+
+
+.servicio h2 {
+
+    color: #102a43;
+
+    font-family: Georgia, serif;
+
+    margin: 10px 0;
+}
+
+
+.servicio p {
+
+    color: #777;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   UBICACIÓN
+========================================= */
+
+.ubicacion {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 90px 20px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 60px;
+
+    align-items: center;
+}
+
+
+.informacion-ubicacion h2 {
+
+    color: #102a43;
+
+    font-family: Georgia, serif;
+
+    font-size: 45px;
+
+    margin-bottom: 20px;
+}
+
+
+.informacion-ubicacion > p {
+
+    color: #666;
+
+    line-height: 1.8;
+
+    margin-bottom: 25px;
+}
+
+
+.direccion {
+
+    background: white;
+
+    padding: 25px;
+
+    border-left: 4px solid #d7ad54;
+
+    margin-bottom: 30px;
+}
+
+
+.direccion p {
+
+    line-height: 1.8;
+}
+
+
+.mapa {
+
+    overflow: hidden;
+
+    border-radius: 6px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+
+.foto-lugar {
+
+    position: relative;
+
+    height: 450px;
+
+    overflow: hidden;
+}
+
+
+.foto-lugar img {
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.foto-lugar div {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: white;
+
+    text-align: center;
+
+    background: rgba(0,0,0,0.4);
+}
+
+
+.foto-lugar h2 {
+
+    font-family: Georgia, serif;
+
+    font-size: 50px;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================
+   RESERVAS
+========================================= */
+
+.reserva-contenedor {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 90px 20px;
+
+    display: grid;
+
+    grid-template-columns: 45% 55%;
+
+    align-items: stretch;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+}
+
+
+.reserva-imagen {
+
+    position: relative;
+
+    min-height: 650px;
+}
+
+
+.reserva-imagen img {
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.reserva-imagen div {
+
+    position: absolute;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    padding: 40px;
+
+    color: white;
+
+    background: linear-gradient(
+        transparent,
+        rgba(0,0,0,0.85)
+    );
+}
+
+
+.reserva-imagen h2 {
+
+    font-family: Georgia, serif;
+
+    font-size: 35px;
+
+    margin-bottom: 10px;
+}
+
+
+.formulario {
+
+    background: white;
+
+    padding: 50px;
+}
+
+
+.formulario h2 {
+
+    font-family: Georgia, serif;
+
+    color: #102a43;
+
+    font-size: 35px;
+
+    margin-bottom: 30px;
+}
+
+
+form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+label {
+
+    color: #333;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+}
+
+
+input,
+select,
+textarea {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 4px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+
+    border-color: #d7ad54;
+}
+
+
+.dos-columnas {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+form .boton {
+
+    margin-top: 20px;
+
+    width: 100%;
+
+    font-size: 16px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+
+    background: #081c2d;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 50px 20px;
+}
+
+
+footer h3 {
+
+    letter-spacing: 3px;
+
+    margin-bottom: 15px;
+}
+
+
+footer p {
+
+    color: #a9b7c4;
+
+    margin: 8px;
+}
+
+
+/* =========================================
+   RESPONSIVE PARA CELULAR
+========================================= */
+
+@media (max-width: 900px) {
+
+    .header {
+
+        height: auto;
+
+        padding: 20px;
+
+        flex-direction: column;
+
+        gap: 20px;
+    }
+
+
+    nav {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 15px;
+    }
+
+
+    .hero {
+
+        min-height: 600px;
+
+        padding: 50px 25px;
+    }
+
+
+    .bienvenida {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .destacados-grid {
+
+        grid-template-columns: 1fr 1fr;
+
+    }
+
+
+    .habitacion {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .foto img {
+
+        height: 300px;
+
+    }
+
+
+    .servicios-grid {
+
+        grid-template-columns: 1fr 1fr;
+
+    }
+
+
+    .ubicacion {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .reserva-contenedor {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .reserva-imagen {
+
+        min-height: 400px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .hero h1 {
+
+        font-size: 45px;
+
+    }
+
+
+    .titulo-pagina h1 {
+
+        font-size: 40px;
+
+    }
+
+
+    .destacados-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .servicios-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .habitacion-info {
+
+        padding: 30px 20px;
+
+    }
+
+
+    .precio {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .dos-columnas {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .formulario {
+
+        padding: 30px 20px;
+
+    }
+
+}

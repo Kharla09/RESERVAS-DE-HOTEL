@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Reservas | Hotel Paraíso Tame</title>
+
+    <link rel="stylesheet" href="estilos.css">
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+    <div class="logo">
+        PARAÍSO <span>TAME</span>
+    </div>
+
+    <nav>
+
+        <a href="index.html">Inicio</a>
+
+        <a href="habitaciones.html">
+            Habitaciones
+        </a>
+
+        <a href="servicios.html">
+            Servicios
+        </a>
+
+        <a href="ubicacion.html">
+            Ubicación
+        </a>
+
+        <a href="reservas.html" class="btn-reserva">
+            Reservar
+        </a>
+
+    </nav>
+
+</header>
+
+
+<section class="titulo-pagina">
+
+    <p>PLANEA TU ESTADÍA</p>
+
+    <h1>Reserva tu habitación</h1>
+
+    <span>
+        Completa el formulario para solicitar tu reserva.
+    </span>
+
+</section>
+
+
+<section class="reserva-contenedor">
+
+
+    <div class="reserva-imagen">
+
+        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1000&q=80">
+
+        <div>
+
+            <h2>Tu habitación te espera</h2>
+
+            <p>
+                Elige tus fechas y disfruta de una
+                experiencia inolvidable en Tame.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="formulario">
+
+        <h2>Datos de la reserva</h2>
+
+        <form>
+
+            <label>Nombre completo</label>
+
+            <input
+                type="text"
+                placeholder="Ej. Juan Pérez"
+                required
+            >
+
+
+            <label>Correo electrónico</label>
+
+            <input
+                type="email"
+                placeholder="correo@gmail.com"
+                required
+            >
+
+
+            <label>Teléfono</label>
+
+            <input
+                type="tel"
+                placeholder="300 000 0000"
+                required
+            >
+
+
+            <div class="dos-columnas">
+
+                <div>
+
+                    <label>Entrada</label>
+
+                    <input
+                        type="date"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>Salida</label>
+
+                    <input
+                        type="date"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <label>Habitación</label>
+
+            <select required>
+
+                <option value="">
+                    Selecciona una habitación
+                </option>
+
+                <option>
+                    Individual - $80.000
+                </option>
+
+                <option>
+                    Doble - $120.000
+                </option>
+
+                <option>
+                    Familiar - $180.000
+                </option>
+
+            </select>
+
+
+            <label>Número de huéspedes</label>
+
+            <input
+                type="number"
+                min="1"
+                max="10"
+                value="1"
+                required
+            >
+
+
+            <label>Mensaje adicional</label>
+
+            <textarea
+                rows="4"
+                placeholder="¿Tienes alguna solicitud especial?"
+            ></textarea>
+
+
+            <button type="submit" class="boton">
+
+                Solicitar reserva
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <h3>HOTEL PARAÍSO TAME</h3>
+
+    <p>Tame, Arauca · Colombia</p>
+
+    <p>© 2026 Hotel Paraíso Tame</p>
+
+</footer>
+
+
+</body>
+</html>
