@@ -1205,3 +1205,196 @@ footer p {
     }
 
 }
+
+/* =========================================
+   ESTILOS DE INTEGRACIÓN CON SUPABASE & RESERVAS
+========================================= */
+
+.status-badge-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.connected {
+    background: #e6f7ec;
+    color: #0d6832;
+    border: 1px solid #b7ebc7;
+}
+
+.status-badge.pending {
+    background: #fff8e6;
+    color: #946200;
+    border: 1px solid #ffe399;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-badge.connected .status-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-badge.pending .status-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.btn-toggle-lista {
+    background: transparent;
+    border: 1px solid #102a43;
+    color: #102a43;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-weight: bold;
+}
+
+.btn-toggle-lista:hover {
+    background: #102a43;
+    color: white;
+}
+
+.alerta-box {
+    display: none;
+    padding: 16px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.alerta-box.visible {
+    display: block;
+}
+
+.alerta-exito {
+    background: #eaf8ef;
+    border-left: 4px solid #10b981;
+    color: #0d5f30;
+}
+
+.alerta-error {
+    background: #fdf0f0;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+}
+
+.alerta-aviso {
+    background: #fef8eb;
+    border-left: 4px solid #d7ad54;
+    color: #7b530c;
+}
+
+.alerta-box strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.seccion-admin-reservas {
+    max-width: 1200px;
+    margin: 40px auto 60px;
+    padding: 0 7%;
+}
+
+.panel-reservas {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+}
+
+.panel-reservas h3 {
+    color: #102a43;
+    font-family: Georgia, serif;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.panel-reservas p.sub {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.tabla-reservas {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+.tabla-reservas th {
+    background: #102a43;
+    color: white;
+    padding: 12px 14px;
+    font-weight: 600;
+}
+
+.tabla-reservas td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.tabla-reservas tr:hover td {
+    background: #fafafa;
+}
+
+.pill-estado {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.pill-estado.pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.pill-estado.confirmada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.pill-estado.cancelada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -84,111 +84,106 @@
 
     <div class="formulario">
 
-        <h2>Datos de la reserva</h2>
+        <div class="status-badge-container">
+            <h2>Datos de la reserva</h2>
+            <div id="status-supabase" class="status-badge pending" title="Estado de la base de datos Supabase">
+                <span class="status-dot"></span>
+                <span id="status-supabase-texto">Verificando Supabase...</span>
+            </div>
+        </div>
 
-        <form>
+        <div id="alerta-resultado" class="alerta-box" role="alert"></div>
 
-            <label>Nombre completo</label>
+        <form id="form-reserva">
 
+            <label for="nombre">Nombre completo</label>
             <input
                 type="text"
+                id="nombre"
+                name="nombre"
                 placeholder="Ej. Juan Pérez"
                 required
             >
 
-
-            <label>Correo electrónico</label>
-
+            <label for="email">Correo electrónico</label>
             <input
                 type="email"
-                placeholder="correo@gmail.com"
+                id="email"
+                name="email"
+                placeholder="correo@ejemplo.com"
                 required
             >
 
-
-            <label>Teléfono</label>
-
+            <label for="telefono">Teléfono / WhatsApp</label>
             <input
                 type="tel"
-                placeholder="300 000 0000"
+                id="telefono"
+                name="telefono"
+                placeholder="Ej. 310 123 4567"
                 required
             >
-
 
             <div class="dos-columnas">
 
                 <div>
-
-                    <label>Entrada</label>
-
+                    <label for="fecha_entrada">Entrada (Check-in)</label>
                     <input
                         type="date"
+                        id="fecha_entrada"
+                        name="fecha_entrada"
                         required
                     >
-
                 </div>
 
-
                 <div>
-
-                    <label>Salida</label>
-
+                    <label for="fecha_salida">Salida (Check-out)</label>
                     <input
                         type="date"
+                        id="fecha_salida"
+                        name="fecha_salida"
                         required
                     >
-
                 </div>
 
             </div>
 
-
-            <label>Habitación</label>
-
-            <select required>
-
+            <label for="habitacion">Habitación</label>
+            <select id="habitacion" name="habitacion" required>
                 <option value="">
                     Selecciona una habitación
                 </option>
-
-                <option>
-                    Individual - $80.000
+                <option value="Habitación Individual - $80.000">
+                    Individual - $80.000 / noche
                 </option>
-
-                <option>
-                    Doble - $120.000
+                <option value="Habitación Doble - $120.000">
+                    Doble - $120.000 / noche
                 </option>
-
-                <option>
-                    Familiar - $180.000
+                <option value="Habitación Familiar - $180.000">
+                    Familiar - $180.000 / noche
                 </option>
-
             </select>
 
-
-            <label>Número de huéspedes</label>
-
+            <label for="huespedes">Número de huéspedes</label>
             <input
                 type="number"
+                id="huespedes"
+                name="huespedes"
                 min="1"
                 max="10"
                 value="1"
                 required
             >
 
-
-            <label>Mensaje adicional</label>
-
+            <label for="mensaje">Mensaje adicional o solicitudes especiales</label>
             <textarea
+                id="mensaje"
+                name="mensaje"
                 rows="4"
-                placeholder="¿Tienes alguna solicitud especial?"
+                placeholder="¿Tienes alguna preferencia de cama, hora estimada de llegada o petición especial?"
             ></textarea>
 
-
-            <button type="submit" class="boton">
-
-                Solicitar reserva
-
+            <button type="submit" id="btn-enviar-reserva" class="boton">
+                Confirmar y enviar reserva
             </button>
 
         </form>
@@ -197,6 +192,44 @@
 
 </section>
 
+<!-- SECCIÓN DE CONSULTA DE RESERVAS / PANEL SUPABASE -->
+<section class="seccion-admin-reservas">
+    <div class="panel-reservas">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <h3>Reservas Registradas</h3>
+                <p class="sub">Consulta en tiempo real las reservas almacenadas en la base de datos Supabase.</p>
+            </div>
+            <button type="button" id="btn-actualizar-reservas" class="btn-toggle-lista">
+                🔄 Refrescar lista
+            </button>
+        </div>
+
+        <div class="tabla-scroll">
+            <table class="tabla-reservas">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Huésped</th>
+                        <th>Habitación</th>
+                        <th>Entrada</th>
+                        <th>Salida</th>
+                        <th>Personas</th>
+                        <th>Estado</th>
+                        <th>Registro</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-reservas-cuerpo">
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #888; padding: 25px;">
+                            Cargando reservas...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
 <footer>
 
@@ -208,6 +241,207 @@
 
 </footer>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('form-reserva');
+    const btnSubmit = document.getElementById('btn-enviar-reserva');
+    const alerta = document.getElementById('alerta-resultado');
+    const statusBadge = document.getElementById('status-supabase');
+    const statusTexto = document.getElementById('status-supabase-texto');
+    const inputEntrada = document.getElementById('fecha_entrada');
+    const inputSalida = document.getElementById('fecha_salida');
+    const selectHabitacion = document.getElementById('habitacion');
+    const btnActualizar = document.getElementById('btn-actualizar-reservas');
+    const tablaCuerpo = document.getElementById('lista-reservas-cuerpo');
+
+    // 1. Establecer fecha mínima para reservas (hoy)
+    const hoy = new Date().toISOString().split('T')[0];
+    if (inputEntrada) inputEntrada.min = hoy;
+    if (inputSalida) inputSalida.min = hoy;
+
+    inputEntrada?.addEventListener('change', () => {
+        if (inputEntrada.value) {
+            inputSalida.min = inputEntrada.value;
+            if (inputSalida.value && inputSalida.value <= inputEntrada.value) {
+                // Seleccionar automáticamente el día siguiente
+                const d = new Date(inputEntrada.value);
+                d.setDate(d.getDate() + 1);
+                inputSalida.value = d.toISOString().split('T')[0];
+            }
+        }
+    });
+
+    // 2. Preseleccionar habitación desde parámetros de URL (?tipo=individual | doble | familiar)
+    const urlParams = new URLSearchParams(window.location.search);
+    const tipoHabitacion = urlParams.get('tipo');
+    if (tipoHabitacion && selectHabitacion) {
+        const lower = tipoHabitacion.toLowerCase();
+        for (let option of selectHabitacion.options) {
+            if (option.text.toLowerCase().includes(lower)) {
+                option.selected = true;
+                break;
+            }
+        }
+    }
+
+    // 3. Verificar estado de Supabase
+    async function verificarEstadoSupabase() {
+        try {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            if (data.configured && data.dbReachable) {
+                statusBadge.className = 'status-badge connected';
+                statusTexto.textContent = 'Supabase Conectado';
+                statusBadge.title = 'Conectado a la base de datos en Supabase';
+            } else if (data.configured) {
+                statusBadge.className = 'status-badge pending';
+                statusTexto.textContent = 'Supabase: Verificando tabla';
+                statusBadge.title = data.message;
+            } else {
+                statusBadge.className = 'status-badge pending';
+                statusTexto.textContent = 'Modo Local (Configura Supabase en Ajustes)';
+                statusBadge.title = 'Para conectar con tu base de datos Supabase, define SUPABASE_URL y SUPABASE_KEY en las variables de entorno.';
+            }
+        } catch (err) {
+            statusBadge.className = 'status-badge pending';
+            statusTexto.textContent = 'Modo Local';
+        }
+    }
+
+    // 4. Mostrar alerta estilizada
+    function mostrarAlerta(tipo, titulo, mensaje) {
+        alerta.className = `alerta-box alerta-${tipo} visible`;
+        alerta.innerHTML = `<strong>${titulo}</strong><span>${mensaje}</span>`;
+        alerta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // 5. Cargar lista de reservas
+    async function cargarReservas() {
+        if (!tablaCuerpo) return;
+        try {
+            const res = await fetch('/api/reservas');
+            const data = await res.json();
+
+            if (!data.reservas || data.reservas.length === 0) {
+                tablaCuerpo.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #888; padding: 25px;">
+                            No hay reservas registradas todavía. ¡Sé el primero en reservar!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tablaCuerpo.innerHTML = data.reservas.map((r, idx) => {
+                const estadoClass = (r.estado || 'pendiente').toLowerCase();
+                const fechaCreacion = r.created_at ? new Date(r.created_at).toLocaleDateString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 'Reciente';
+                return `
+                    <tr>
+                        <td><strong>#${r.id || (idx + 1)}</strong></td>
+                        <td>
+                            <strong>${escapeHtml(r.nombre)}</strong><br>
+                            <small style="color: #666;">${escapeHtml(r.email)} · ${escapeHtml(r.telefono)}</small>
+                        </td>
+                        <td>${escapeHtml(r.habitacion)}</td>
+                        <td>${escapeHtml(r.fecha_entrada)}</td>
+                        <td>${escapeHtml(r.fecha_salida)}</td>
+                        <td>${r.huespedes || 1} pers.</td>
+                        <td><span class="pill-estado ${estadoClass}">${escapeHtml(r.estado || 'pendiente')}</span></td>
+                        <td><small style="color: #666;">${fechaCreacion}</small></td>
+                    </tr>
+                `;
+            }).join('');
+        } catch (err) {
+            tablaCuerpo.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; color: #c53030; padding: 25px;">
+                        Error al consultar las reservas del servidor.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // 6. Manejo del envío del formulario
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Validación de fechas
+        if (inputSalida.value <= inputEntrada.value) {
+            mostrarAlerta('error', 'Error en fechas', 'La fecha de salida debe ser posterior a la fecha de entrada.');
+            return;
+        }
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Guardando reserva...';
+
+        const payload = {
+            nombre: document.getElementById('nombre').value,
+            email: document.getElementById('email').value,
+            telefono: document.getElementById('telefono').value,
+            fecha_entrada: inputEntrada.value,
+            fecha_salida: inputSalida.value,
+            habitacion: selectHabitacion.value,
+            huespedes: document.getElementById('huespedes').value,
+            mensaje: document.getElementById('mensaje').value
+        };
+
+        try {
+            const respuesta = await fetch('/api/reservas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const resultado = await respuesta.json();
+
+            if (respuesta.ok && resultado.success) {
+                const fuente = resultado.storage === 'supabase' ? 'en la base de datos Supabase' : 'localmente';
+                mostrarAlerta(
+                    'exito',
+                    '¡Reserva confirmada con éxito!',
+                    `Hemos recibido la solicitud para <strong>${escapeHtml(payload.nombre)}</strong> en ${escapeHtml(payload.habitacion)}. Tu reserva quedó guardada ${fuente}. ID de referencia: <strong>#${resultado.reserva?.id || 'OK'}</strong>.`
+                );
+                form.reset();
+                // Restaurar fecha mínima
+                if (inputEntrada) inputEntrada.min = hoy;
+                if (inputSalida) inputSalida.min = hoy;
+                cargarReservas();
+            } else {
+                const msgError = resultado.error || resultado.message || 'No se pudo guardar la reserva.';
+                const hint = resultado.hint ? `<br><small style="margin-top: 6px; display: block; color: #555;">${resultado.hint}</small>` : '';
+                mostrarAlerta('error', 'No fue posible completar la reserva', msgError + hint);
+            }
+        } catch (err) {
+            mostrarAlerta('error', 'Error de conexión', 'Ocurrió un problema de red al contactar al servidor: ' + err.message);
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Confirmar y enviar reserva';
+        }
+    });
+
+    btnActualizar?.addEventListener('click', () => {
+        cargarReservas();
+        verificarEstadoSupabase();
+    });
+
+    // Iniciar verificación y carga inicial
+    verificarEstadoSupabase();
+    cargarReservas();
+});
+</script>
 
 </body>
 </html>
