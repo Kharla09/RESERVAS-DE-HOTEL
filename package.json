@@ -1,0 +1,15 @@
+{
+  "name": "hotel-paraiso-tame",
+  "version": "1.0.0",
+  "description": "Sitio web para el Hotel Paraíso Tame en Tame, Arauca",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "mkdir -p dist && cp -r \"hotel 1103\"/* dist/",
+    "lint": "echo 'No lint errors'"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

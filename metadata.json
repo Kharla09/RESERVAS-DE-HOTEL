@@ -1,0 +1,8 @@
+{
+  "name": "Hotel Paraíso Tame",
+  "description": "Sitio web para el Hotel Paraíso Tame en Tame, Arauca, con información sobre habitaciones, servicios, ubicación y reservas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
