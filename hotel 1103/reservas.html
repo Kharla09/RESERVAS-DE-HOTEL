@@ -192,45 +192,6 @@
 
 </section>
 
-<!-- SECCIÓN DE CONSULTA DE RESERVAS / PANEL SUPABASE -->
-<section class="seccion-admin-reservas">
-    <div class="panel-reservas">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
-            <div>
-                <h3>Reservas Registradas</h3>
-                <p class="sub">Consulta en tiempo real las reservas almacenadas en la base de datos Supabase.</p>
-            </div>
-            <button type="button" id="btn-actualizar-reservas" class="btn-toggle-lista">
-                🔄 Refrescar lista
-            </button>
-        </div>
-
-        <div class="tabla-scroll">
-            <table class="tabla-reservas">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Huésped</th>
-                        <th>Habitación</th>
-                        <th>Entrada</th>
-                        <th>Salida</th>
-                        <th>Personas</th>
-                        <th>Estado</th>
-                        <th>Registro</th>
-                    </tr>
-                </thead>
-                <tbody id="lista-reservas-cuerpo">
-                    <tr>
-                        <td colspan="8" style="text-align: center; color: #888; padding: 25px;">
-                            Cargando reservas...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
 <footer>
 
     <h3>HOTEL PARAÍSO TAME</h3>
@@ -238,6 +199,12 @@
     <p>Tame, Arauca · Colombia</p>
 
     <p>© 2026 Hotel Paraíso Tame</p>
+
+    <p style="margin-top: 18px;">
+        <a href="admin.html" style="color: rgba(255,255,255,0.6); font-size: 13px; text-decoration: none; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s;">
+            🔒 Acceso Administrativo
+        </a>
+    </p>
 
 </footer>
 
@@ -251,8 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEntrada = document.getElementById('fecha_entrada');
     const inputSalida = document.getElementById('fecha_salida');
     const selectHabitacion = document.getElementById('habitacion');
-    const btnActualizar = document.getElementById('btn-actualizar-reservas');
-    const tablaCuerpo = document.getElementById('lista-reservas-cuerpo');
 
     // 1. Establecer fecha mínima para reservas (hoy)
     const hoy = new Date().toISOString().split('T')[0];
@@ -263,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputEntrada.value) {
             inputSalida.min = inputEntrada.value;
             if (inputSalida.value && inputSalida.value <= inputEntrada.value) {
-                // Seleccionar automáticamente el día siguiente
                 const d = new Date(inputEntrada.value);
                 d.setDate(d.getDate() + 1);
                 inputSalida.value = d.toISOString().split('T')[0];
@@ -284,83 +248,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 3. Verificar estado de Supabase
-    async function verificarEstadoSupabase() {
+    // 3. Verificar estado del servicio
+    async function verificarEstado() {
         try {
             const res = await fetch('/api/status');
             const data = await res.json();
             if (data.configured && data.dbReachable) {
                 statusBadge.className = 'status-badge connected';
-                statusTexto.textContent = 'Supabase Conectado';
-                statusBadge.title = 'Conectado a la base de datos en Supabase';
-            } else if (data.configured) {
-                statusBadge.className = 'status-badge pending';
-                statusTexto.textContent = 'Supabase: Verificando tabla';
-                statusBadge.title = data.message;
+                statusTexto.textContent = 'Sistema en Línea';
+                statusBadge.title = 'Servicio conectado con la base de datos Supabase';
             } else {
                 statusBadge.className = 'status-badge pending';
-                statusTexto.textContent = 'Modo Local (Configura Supabase en Ajustes)';
-                statusBadge.title = 'Para conectar con tu base de datos Supabase, define SUPABASE_URL y SUPABASE_KEY en las variables de entorno.';
+                statusTexto.textContent = 'Recepción Activa';
             }
         } catch (err) {
             statusBadge.className = 'status-badge pending';
-            statusTexto.textContent = 'Modo Local';
+            statusTexto.textContent = 'Recepción Activa';
         }
     }
 
     // 4. Mostrar alerta estilizada
     function mostrarAlerta(tipo, titulo, mensaje) {
         alerta.className = `alerta-box alerta-${tipo} visible`;
-        alerta.innerHTML = `<strong>${titulo}</strong><span>${mensaje}</span>`;
+        alerta.innerHTML = `<strong>${titulo}</strong><div>${mensaje}</div>`;
         alerta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    // 5. Cargar lista de reservas
-    async function cargarReservas() {
-        if (!tablaCuerpo) return;
-        try {
-            const res = await fetch('/api/reservas');
-            const data = await res.json();
-
-            if (!data.reservas || data.reservas.length === 0) {
-                tablaCuerpo.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; color: #888; padding: 25px;">
-                            No hay reservas registradas todavía. ¡Sé el primero en reservar!
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tablaCuerpo.innerHTML = data.reservas.map((r, idx) => {
-                const estadoClass = (r.estado || 'pendiente').toLowerCase();
-                const fechaCreacion = r.created_at ? new Date(r.created_at).toLocaleDateString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 'Reciente';
-                return `
-                    <tr>
-                        <td><strong>#${r.id || (idx + 1)}</strong></td>
-                        <td>
-                            <strong>${escapeHtml(r.nombre)}</strong><br>
-                            <small style="color: #666;">${escapeHtml(r.email)} · ${escapeHtml(r.telefono)}</small>
-                        </td>
-                        <td>${escapeHtml(r.habitacion)}</td>
-                        <td>${escapeHtml(r.fecha_entrada)}</td>
-                        <td>${escapeHtml(r.fecha_salida)}</td>
-                        <td>${r.huespedes || 1} pers.</td>
-                        <td><span class="pill-estado ${estadoClass}">${escapeHtml(r.estado || 'pendiente')}</span></td>
-                        <td><small style="color: #666;">${fechaCreacion}</small></td>
-                    </tr>
-                `;
-            }).join('');
-        } catch (err) {
-            tablaCuerpo.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align: center; color: #c53030; padding: 25px;">
-                        Error al consultar las reservas del servidor.
-                    </td>
-                </tr>
-            `;
-        }
     }
 
     function escapeHtml(str) {
@@ -372,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/"/g, '&quot;');
     }
 
-    // 6. Manejo del envío del formulario
+    // 5. Manejo del envío del formulario
     form?.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -383,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Guardando reserva...';
+        btnSubmit.textContent = 'Procesando tu reserva...';
 
         const payload = {
             nombre: document.getElementById('nombre').value,
@@ -408,21 +319,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultado = await respuesta.json();
 
             if (respuesta.ok && resultado.success) {
-                const fuente = resultado.storage === 'supabase' ? 'en la base de datos Supabase' : 'localmente';
+                const idReserva = resultado.reserva?.id || 'R-' + Math.floor(1000 + Math.random() * 9000);
                 mostrarAlerta(
                     'exito',
-                    '¡Reserva confirmada con éxito!',
-                    `Hemos recibido la solicitud para <strong>${escapeHtml(payload.nombre)}</strong> en ${escapeHtml(payload.habitacion)}. Tu reserva quedó guardada ${fuente}. ID de referencia: <strong>#${resultado.reserva?.id || 'OK'}</strong>.`
+                    '¡Solicitud de Reserva Registrada!',
+                    `<p style="margin-bottom: 8px;">Muchas gracias <strong>${escapeHtml(payload.nombre)}</strong>. Hemos recibido tu solicitud para <strong>${escapeHtml(payload.habitacion)}</strong>.</p>
+                     <p style="margin-bottom: 8px;"><strong>Código de reserva:</strong> #${idReserva} | <strong>Entrada:</strong> ${escapeHtml(payload.fecha_entrada)} | <strong>Salida:</strong> ${escapeHtml(payload.fecha_salida)}</p>
+                     <p style="font-size: 13px; color: #444;">Nuestro equipo en recepción se comunicará al teléfono <strong>${escapeHtml(payload.telefono)}</strong> o a tu correo para confirmar los detalles de tu estadía.</p>`
                 );
                 form.reset();
-                // Restaurar fecha mínima
                 if (inputEntrada) inputEntrada.min = hoy;
                 if (inputSalida) inputSalida.min = hoy;
-                cargarReservas();
             } else {
-                const msgError = resultado.error || resultado.message || 'No se pudo guardar la reserva.';
-                const hint = resultado.hint ? `<br><small style="margin-top: 6px; display: block; color: #555;">${resultado.hint}</small>` : '';
-                mostrarAlerta('error', 'No fue posible completar la reserva', msgError + hint);
+                const msgError = resultado.error || resultado.message || 'No fue posible completar la reserva.';
+                mostrarAlerta('error', 'No fue posible registrar la reserva', msgError);
             }
         } catch (err) {
             mostrarAlerta('error', 'Error de conexión', 'Ocurrió un problema de red al contactar al servidor: ' + err.message);
@@ -432,14 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    btnActualizar?.addEventListener('click', () => {
-        cargarReservas();
-        verificarEstadoSupabase();
-    });
-
-    // Iniciar verificación y carga inicial
-    verificarEstadoSupabase();
-    cargarReservas();
+    verificarEstado();
 });
 </script>
 

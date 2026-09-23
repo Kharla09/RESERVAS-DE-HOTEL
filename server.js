@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
@@ -13,6 +14,44 @@ app.use(express.urlencoded({ extended: true }));
 
 // In-memory fallback for reservations if Supabase env vars are not yet entered
 const localReservas = [];
+
+// In-memory admin sessions: token -> { user, expiresAt }
+const adminSessions = new Map();
+
+function createAdminSession(user) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours validity
+  adminSessions.set(token, { user, expiresAt });
+  return token;
+}
+
+function validateAdminToken(token) {
+  if (!token) return null;
+  const session = adminSessions.get(token);
+  if (!session) return null;
+  if (Date.now() > session.expiresAt) {
+    adminSessions.delete(token);
+    return null;
+  }
+  return session;
+}
+
+function requireAdminAuth(req, res, next) {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.substring(7).trim()
+    : (req.headers['x-admin-token'] || req.query.token);
+
+  const session = validateAdminToken(token);
+  if (!session) {
+    return res.status(401).json({
+      success: false,
+      message: 'Acceso no autorizado. Inicie sesión en el panel de administración.',
+    });
+  }
+  req.adminUser = session.user;
+  next();
+}
 
 // Supabase lazy client initialization
 let supabaseClient = null;
@@ -234,8 +273,122 @@ app.post('/api/reservas', async (req, res) => {
   }
 });
 
-// 3. Listar reservas registradas
-app.get('/api/reservas', async (req, res) => {
+// -------------------------------------------------------------
+// RUTAS DE AUTENTICACIÓN ADMINISTRATIVA
+// -------------------------------------------------------------
+
+// Iniciar sesión como Administrador
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor ingresa usuario y contraseña.',
+      });
+    }
+
+    const inputUser = String(username).trim();
+    const inputPass = String(password).trim();
+
+    const envUser = (process.env.ADMIN_USER || 'admin').trim();
+    const envPass = (process.env.ADMIN_PASSWORD || 'paraiso2026').trim();
+
+    // 1. Verificación directa con credenciales configuradas en el entorno
+    const isValidEnv =
+      (inputUser.toLowerCase() === envUser.toLowerCase() ||
+        inputUser.toLowerCase() === 'admin' ||
+        inputUser.toLowerCase() === 'kharlaramirez10@gmail.com') &&
+      inputPass === envPass;
+
+    if (isValidEnv) {
+      const token = createAdminSession(inputUser);
+      return res.json({
+        success: true,
+        message: 'Acceso autorizado como Administrador.',
+        token,
+        user: { username: inputUser, role: 'admin' },
+      });
+    }
+
+    // 2. Si el usuario creó un usuario en Supabase Auth, intentar validar allí también
+    const client = getSupabase();
+    if (client) {
+      try {
+        const { data: authData, error: authError } = await client.auth.signInWithPassword({
+          email: inputUser,
+          password: inputPass,
+        });
+
+        if (!authError && authData && authData.user) {
+          const token = createAdminSession(authData.user.email);
+          return res.json({
+            success: true,
+            message: 'Acceso autorizado mediante Supabase Auth.',
+            token,
+            user: { username: authData.user.email, role: 'admin' },
+          });
+        }
+      } catch (e) {
+        // Fallo de Supabase Auth controlado
+      }
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: 'Credenciales inválidas. Verifica tu usuario y contraseña.',
+    });
+  } catch (err) {
+    console.error('Error en login de administrador:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Error en el servidor al intentar autenticar.',
+    });
+  }
+});
+
+// Verificar si la sesión actual es válida
+app.get('/api/admin/check-session', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.substring(7).trim()
+    : (req.headers['x-admin-token'] || req.query.token);
+
+  const session = validateAdminToken(token);
+  if (!session) {
+    return res.status(401).json({ authenticated: false, message: 'Sesión no válida o expirada' });
+  }
+
+  return res.json({
+    authenticated: true,
+    user: session.user,
+  });
+});
+
+// Cerrar sesión
+app.post('/api/admin/logout', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.substring(7).trim()
+    : (req.headers['x-admin-token'] || req.query.token);
+
+  if (token) {
+    adminSessions.delete(token);
+  }
+
+  return res.json({
+    success: true,
+    message: 'Sesión cerrada exitosamente.',
+  });
+});
+
+// -------------------------------------------------------------
+// GESTIÓN DE RESERVAS
+// -------------------------------------------------------------
+
+// 3. Listar reservas registradas (SOLO ADMINISTRADOR)
+app.get('/api/reservas', requireAdminAuth, async (req, res) => {
   try {
     const client = getSupabase();
 
@@ -244,7 +397,7 @@ app.get('/api/reservas', async (req, res) => {
         .from('reservas')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(100);
 
       if (error) {
         console.error('Error obteniendo reservas de Supabase:', error);
@@ -274,8 +427,8 @@ app.get('/api/reservas', async (req, res) => {
   }
 });
 
-// 4. Actualizar estado de una reserva (ej: confirmar, cancelar)
-app.patch('/api/reservas/:id', async (req, res) => {
+// 4. Actualizar estado de una reserva (SOLO ADMINISTRADOR)
+app.patch('/api/reservas/:id', requireAdminAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
@@ -302,6 +455,36 @@ app.patch('/api/reservas/:id', async (req, res) => {
       if (item) {
         item.estado = estado;
         return res.json({ success: true, reserva: item });
+      }
+      return res.status(404).json({ success: false, message: 'Reserva no encontrada' });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 5. Eliminar reserva (SOLO ADMINISTRADOR)
+app.delete('/api/reservas/:id', requireAdminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const client = getSupabase();
+    if (client) {
+      const { error } = await client
+        .from('reservas')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+
+      return res.json({ success: true, message: 'Reserva eliminada exitosamente' });
+    } else {
+      const index = localReservas.findIndex((r) => String(r.id) === String(id));
+      if (index !== -1) {
+        localReservas.splice(index, 1);
+        return res.json({ success: true, message: 'Reserva eliminada exitosamente' });
       }
       return res.status(404).json({ success: false, message: 'Reserva no encontrada' });
     }

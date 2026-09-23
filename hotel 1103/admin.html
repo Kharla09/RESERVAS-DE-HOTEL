@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Hotel Paraíso Tame</title>
+    <link rel="stylesheet" href="estilos.css">
+    <style>
+        /* Estilos específicos para el Panel Administrativo */
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-topbar {
+            background: #102a43;
+            color: white;
+            padding: 15px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .admin-topbar .brand {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-topbar .brand span {
+            color: #d7ad54;
+        }
+
+        .admin-topbar .badge-role {
+            background: rgba(215, 173, 84, 0.2);
+            color: #d7ad54;
+            border: 1px solid #d7ad54;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-topbar .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .admin-topbar a.link-sitio {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .admin-topbar a.link-sitio:hover {
+            color: #d7ad54;
+        }
+
+        .btn-logout {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #c53030;
+        }
+
+        /* Contenedor Principal */
+        .admin-container {
+            max-width: 1300px;
+            width: 92%;
+            margin: 30px auto;
+            flex: 1;
+        }
+
+        /* Pantalla de Login */
+        .login-card {
+            max-width: 440px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 40px 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #d7ad54;
+            text-align: center;
+        }
+
+        .login-card .icon-lock {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .login-card h2 {
+            color: #102a43;
+            font-family: Georgia, serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .login-card p.desc {
+            color: #627d98;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .login-form {
+            text-align: left;
+        }
+
+        .login-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334e68;
+            margin-bottom: 6px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #bcccdc;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .login-form input:focus {
+            border-color: #102a43;
+            box-shadow: 0 0 0 3px rgba(16, 42, 67, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: #102a43;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #d7ad54;
+            color: #102a43;
+        }
+
+        .login-help-box {
+            margin-top: 22px;
+            background: #f0f4f8;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #486581;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        /* Dashboard de Métricas */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px 22px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border-left: 4px solid #102a43;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-card.pendientes {
+            border-left-color: #f59e0b;
+        }
+
+        .metric-card.confirmadas {
+            border-left-color: #10b981;
+        }
+
+        .metric-card.canceladas {
+            border-left-color: #ef4444;
+        }
+
+        .metric-card .info p {
+            font-size: 13px;
+            color: #627d98;
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .info h3 {
+            font-size: 28px;
+            color: #102a43;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .metric-card .icon {
+            font-size: 32px;
+            opacity: 0.8;
+        }
+
+        /* Barra de Control / Filtros */
+        .controls-card {
+            background: white;
+            padding: 18px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-input {
+            padding: 9px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 250px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #102a43;
+        }
+
+        .select-filter {
+            padding: 9px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+        }
+
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: #102a43;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            background: #243b53;
+        }
+
+        .btn-action.btn-csv {
+            background: #0d6832;
+        }
+
+        .btn-action.btn-csv:hover {
+            background: #084c24;
+        }
+
+        /* Tabla de Reservas */
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #102a43;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .admin-table th {
+            background: #f8fafc;
+            color: #475569;
+            padding: 12px 16px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .admin-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover td {
+            background: #fcfdfe;
+        }
+
+        .guest-info strong {
+            display: block;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guest-info small {
+            color: #64748b;
+        }
+
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 4px;
+            transition: 0.2s;
+        }
+
+        .btn-whatsapp:hover {
+            background: #bbf7d0;
+        }
+
+        /* Píldoras de Estado */
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-status.pendiente {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-status.confirmada {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-status.cancelada {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Botones de Acción en Fila */
+        .row-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-mini {
+            padding: 5px 9px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-mini.confirm {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-mini.confirm:hover {
+            background: #059669;
+        }
+
+        .btn-mini.cancel {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-mini.cancel:hover {
+            background: #d97706;
+        }
+
+        .btn-mini.delete {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn-mini.delete:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .admin-footer {
+            margin-top: auto;
+            background: #102a43;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 18px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BARRA SUPERIOR ADMINISTRATIVA -->
+    <header class="admin-topbar">
+        <div class="brand">
+            🏨 PARAÍSO <span>TAME</span>
+            <span class="badge-role">Panel Administrativo</span>
+        </div>
+
+        <div class="nav-actions">
+            <span id="user-display" style="font-size: 13px; color: rgba(255,255,255,0.9); display: none;">
+                👤 <strong id="logged-user-name">Admin</strong>
+            </span>
+            <a href="index.html" class="link-sitio">🌐 Ir al sitio público</a>
+            <button id="btn-logout" class="btn-logout" style="display: none;">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <main class="admin-container">
+
+        <!-- 1. VISTA DE INICIO DE SESIÓN (LOGIN) -->
+        <section id="view-login" class="login-card">
+            <div class="icon-lock">🔐</div>
+            <h2>Acceso Administrativo</h2>
+            <p class="desc">
+                Ingresa con tu perfil de administrador para consultar y gestionar las reservas registradas en Supabase.
+            </p>
+
+            <div id="login-error" class="alerta-box alerta-error" style="display: none; margin-bottom: 15px;"></div>
+
+            <form id="form-login" class="login-form">
+                <div>
+                    <label for="username">Usuario o Correo</label>
+                    <input type="text" id="username" placeholder="admin o tu correo" required autocomplete="username">
+                </div>
+
+                <div>
+                    <label for="password">Contraseña de Administrador</label>
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" id="btn-submit-login" class="btn-login">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="login-help-box">
+                ℹ️ <strong>Credenciales de acceso:</strong><br>
+                Usuario predeterminado: <code>admin</code> o tu correo <code>kharlaramirez10@gmail.com</code>.<br>
+                Contraseña predeterminada: <code>paraiso2026</code>.<br>
+                <small style="color: #64748b;">(Puedes personalizar estas credenciales en el archivo <code>.env</code> con <code>ADMIN_USER</code> y <code>ADMIN_PASSWORD</code>).</small>
+            </div>
+        </section>
+
+        <!-- 2. VISTA DE GESTIÓN (DASHBOARD) -->
+        <section id="view-dashboard" style="display: none;">
+
+            <!-- Tarjetas de métricas -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="info">
+                        <p>Total Reservas</p>
+                        <h3 id="stat-total">0</h3>
+                    </div>
+                    <div class="icon">📋</div>
+                </div>
+
+                <div class="metric-card pendientes">
+                    <div class="info">
+                        <p>Por Confirmar</p>
+                        <h3 id="stat-pendientes">0</h3>
+                    </div>
+                    <div class="icon">⏳</div>
+                </div>
+
+                <div class="metric-card confirmadas">
+                    <div class="info">
+                        <p>Confirmadas</p>
+                        <h3 id="stat-confirmadas">0</h3>
+                    </div>
+                    <div class="icon">✅</div>
+                </div>
+
+                <div class="metric-card canceladas">
+                    <div class="info">
+                        <p>Canceladas</p>
+                        <h3 id="stat-canceladas">0</h3>
+                    </div>
+                    <div class="icon">❌</div>
+                </div>
+            </div>
+
+            <!-- Barra de Filtros y Herramientas -->
+            <div class="controls-card">
+                <div class="controls-left">
+                    <input type="text" id="filter-search" class="search-input" placeholder="🔍 Buscar por huésped, teléfono o habitación...">
+                    
+                    <select id="filter-status" class="select-filter">
+                        <option value="todos">Todos los estados</option>
+                        <option value="pendiente">Solo Pendientes</option>
+                        <option value="confirmada">Solo Confirmadas</option>
+                        <option value="cancelada">Solo Canceladas</option>
+                    </select>
+
+                    <div id="badge-db" class="status-badge connected" style="margin-bottom: 0;">
+                        <span class="status-dot"></span>
+                        <span id="badge-db-texto">Supabase Conectado</span>
+                    </div>
+                </div>
+
+                <div class="controls-right">
+                    <button type="button" id="btn-export-csv" class="btn-action btn-csv" title="Descargar reporte en formato Excel / CSV">
+                        📥 Exportar CSV
+                    </button>
+                    <button type="button" id="btn-refresh" class="btn-action">
+                        🔄 Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mensaje de notificación / estado -->
+            <div id="dashboard-alert" class="alerta-box" style="display: none; margin-bottom: 20px;"></div>
+
+            <!-- Tabla de Reservas -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3>Listado de Reservas de Huéspedes</h3>
+                    <span id="table-count" style="font-size: 13px; color: #64748b;">Mostrando 0 reservas</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th># ID</th>
+                                <th>Fecha Registro</th>
+                                <th>Huésped</th>
+                                <th>Habitación</th>
+                                <th>Estadía (Check-In / Out)</th>
+                                <th>Personas</th>
+                                <th>Estado</th>
+                                <th>Solicitud / Mensaje</th>
+                                <th style="text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 30px; color: #888;">
+                                    Cargando reservas desde Supabase...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="admin-footer">
+        Hotel Paraíso Tame · Sistema de Gestión de Reservas · Acceso Restringido para Administradores
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewLogin = document.getElementById('view-login');
+            const viewDashboard = document.getElementById('view-dashboard');
+            const formLogin = document.getElementById('form-login');
+            const btnSubmitLogin = document.getElementById('btn-submit-login');
+            const loginError = document.getElementById('login-error');
+            const userDisplay = document.getElementById('user-display');
+            const loggedUserName = document.getElementById('logged-user-name');
+            const btnLogout = document.getElementById('btn-logout');
+
+            const tableBody = document.getElementById('admin-table-body');
+            const tableCount = document.getElementById('table-count');
+            const filterSearch = document.getElementById('filter-search');
+            const filterStatus = document.getElementById('filter-status');
+            const btnRefresh = document.getElementById('btn-refresh');
+            const btnExportCsv = document.getElementById('btn-export-csv');
+            const dashboardAlert = document.getElementById('dashboard-alert');
+
+            // Métricas
+            const statTotal = document.getElementById('stat-total');
+            const statPendientes = document.getElementById('stat-pendientes');
+            const statConfirmadas = document.getElementById('stat-confirmadas');
+            const statCanceladas = document.getElementById('stat-canceladas');
+
+            let todasLasReservas = [];
+            const STORAGE_TOKEN_KEY = 'hotel_admin_token';
+            const STORAGE_USER_KEY = 'hotel_admin_user';
+
+            function getToken() {
+                return localStorage.getItem(STORAGE_TOKEN_KEY) || sessionStorage.getItem(STORAGE_TOKEN_KEY);
+            }
+
+            function setSession(token, user, remember = true) {
+                const storage = remember ? localStorage : sessionStorage;
+                storage.setItem(STORAGE_TOKEN_KEY, token);
+                storage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
+            }
+
+            function clearSession() {
+                localStorage.removeItem(STORAGE_TOKEN_KEY);
+                localStorage.removeItem(STORAGE_USER_KEY);
+                sessionStorage.removeItem(STORAGE_TOKEN_KEY);
+                sessionStorage.removeItem(STORAGE_USER_KEY);
+            }
+
+            // 1. Verificar si ya hay una sesión activa
+            async function verificarSesion() {
+                const token = getToken();
+                if (!token) {
+                    mostrarVistaLogin();
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/api/admin/check-session', {
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.authenticated) {
+                            mostrarVistaDashboard(data.user);
+                            cargarReservas();
+                            return;
+                        }
+                    }
+                    clearSession();
+                    mostrarVistaLogin();
+                } catch (e) {
+                    mostrarVistaLogin();
+                }
+            }
+
+            function mostrarVistaLogin() {
+                viewLogin.style.display = 'block';
+                viewDashboard.style.display = 'none';
+                userDisplay.style.display = 'none';
+                btnLogout.style.display = 'none';
+            }
+
+            function mostrarVistaDashboard(user) {
+                viewLogin.style.display = 'none';
+                viewDashboard.style.display = 'block';
+                userDisplay.style.display = 'inline-flex';
+                loggedUserName.textContent = (user && user.username) ? user.username : 'Administrador';
+                btnLogout.style.display = 'inline-block';
+            }
+
+            // 2. Manejo de Login
+            formLogin?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginError.style.display = 'none';
+                btnSubmitLogin.disabled = true;
+                btnSubmitLogin.textContent = 'Verificando...';
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                try {
+                    const res = await fetch('/api/admin/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok && data.success) {
+                        setSession(data.token, data.user);
+                        mostrarVistaDashboard(data.user);
+                        cargarReservas();
+                    } else {
+                        loginError.style.display = 'block';
+                        loginError.textContent = data.message || 'Credenciales incorrectas.';
+                    }
+                } catch (err) {
+                    loginError.style.display = 'block';
+                    loginError.textContent = 'Error de conexión con el servidor: ' + err.message;
+                } finally {
+                    btnSubmitLogin.disabled = false;
+                    btnSubmitLogin.textContent = 'Iniciar Sesión';
+                }
+            });
+
+            // 3. Manejo de Logout
+            btnLogout?.addEventListener('click', async () => {
+                const token = getToken();
+                try {
+                    await fetch('/api/admin/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                } catch (e) {}
+                clearSession();
+                mostrarVistaLogin();
+            });
+
+            // 4. Cargar Reservas desde la API protegida
+            async function cargarReservas() {
+                const token = getToken();
+                if (!token) {
+                    mostrarVistaLogin();
+                    return;
+                }
+
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 25px; color: #64748b;">
+                            Consultando registros en Supabase...
+                        </td>
+                    </tr>
+                `;
+
+                try {
+                    const res = await fetch('/api/reservas', {
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (res.status === 401) {
+                        clearSession();
+                        mostrarVistaLogin();
+                        return;
+                    }
+
+                    const data = await res.json();
+
+                    if (data.success && Array.isArray(data.reservas)) {
+                        todasLasReservas = data.reservas;
+                        actualizarMetricas(todasLasReservas);
+                        renderizarTabla();
+                    } else {
+                        mostrarAlertaDashboard('error', 'Error al consultar reservas: ' + (data.error || 'Respuesta inválida'));
+                    }
+                } catch (err) {
+                    mostrarAlertaDashboard('error', 'Fallo de red al conectar con el servidor: ' + err.message);
+                }
+            }
+
+            // 5. Actualizar Métricas en tiempo real
+            function actualizarMetricas(reservas) {
+                statTotal.textContent = reservas.length;
+                statPendientes.textContent = reservas.filter(r => (r.estado || 'pendiente').toLowerCase() === 'pendiente').length;
+                statConfirmadas.textContent = reservas.filter(r => (r.estado || '').toLowerCase() === 'confirmada').length;
+                statCanceladas.textContent = reservas.filter(r => (r.estado || '').toLowerCase() === 'cancelada').length;
+            }
+
+            // 6. Renderizar tabla con filtros aplicados
+            function renderizarTabla() {
+                const textoBusqueda = filterSearch.value.toLowerCase().trim();
+                const estadoFiltro = filterStatus.value.toLowerCase();
+
+                const filtradas = todasLasReservas.filter(r => {
+                    const estado = (r.estado || 'pendiente').toLowerCase();
+                    const coincideEstado = (estadoFiltro === 'todos') || (estado === estadoFiltro);
+
+                    const texto = `${r.id} ${r.nombre || ''} ${r.email || ''} ${r.telefono || ''} ${r.habitacion || ''}`.toLowerCase();
+                    const coincideBusqueda = !textoBusqueda || texto.includes(textoBusqueda);
+
+                    return coincideEstado && coincideBusqueda;
+                });
+
+                tableCount.textContent = `Mostrando ${filtradas.length} de ${todasLasReservas.length} reservas`;
+
+                if (filtradas.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 35px; color: #888;">
+                                No se encontraron reservas que coincidan con los filtros aplicados.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tableBody.innerHTML = filtradas.map(r => {
+                    const estado = (r.estado || 'pendiente').toLowerCase();
+                    const fechaRegistro = r.created_at ? new Date(r.created_at).toLocaleDateString('es-CO', {
+                        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    }) : 'Reciente';
+
+                    // Limpieza de teléfono para WhatsApp
+                    const soloNumeros = (r.telefono || '').replace(/\D/g, '');
+                    const telWhatsApp = soloNumeros.startsWith('57') ? soloNumeros : (soloNumeros.length === 10 ? '57' + soloNumeros : soloNumeros);
+                    const mensajeWa = encodeURIComponent(`Hola ${r.nombre || ''}, te saludamos del Hotel Paraíso Tame. Con respecto a tu reserva #${r.id} (${r.habitacion}):`);
+
+                    const noches = calcularNoches(r.fecha_entrada, r.fecha_salida);
+
+                    return `
+                        <tr data-id="${r.id}">
+                            <td><strong>#${r.id}</strong></td>
+                            <td><small style="color: #64748b;">${fechaRegistro}</small></td>
+                            <td>
+                                <div class="guest-info">
+                                    <strong>${escapeHtml(r.nombre)}</strong>
+                                    <small>${escapeHtml(r.email)}</small><br>
+                                    <small>📞 ${escapeHtml(r.telefono)}</small>
+                                    ${telWhatsApp ? `
+                                        <div>
+                                            <a href="https://wa.me/${telWhatsApp}?text=${mensajeWa}" target="_blank" rel="noopener" class="btn-whatsapp">
+                                                💬 Contactar WhatsApp
+                                            </a>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </td>
+                            <td><strong>${escapeHtml(r.habitacion)}</strong></td>
+                            <td>
+                                <div><strong>In:</strong> ${escapeHtml(r.fecha_entrada)}</div>
+                                <div><strong>Out:</strong> ${escapeHtml(r.fecha_salida)}</div>
+                                <small style="color: #64748b;">(${noches} ${noches === 1 ? 'noche' : 'noches'})</small>
+                            </td>
+                            <td>${r.huespedes || 1} pers.</td>
+                            <td>
+                                <span class="badge-status ${estado}">${escapeHtml(estado)}</span>
+                            </td>
+                            <td style="max-width: 220px;">
+                                <div style="font-size: 12px; color: #475569; word-break: break-word;">
+                                    ${escapeHtml(r.mensaje) || '<em style="color:#94a3b8;">Sin mensaje adicional</em>'}
+                                </div>
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="row-actions" style="justify-content: flex-end;">
+                                    ${estado !== 'confirmada' ? `
+                                        <button type="button" class="btn-mini confirm" onclick="cambiarEstadoReserva(${r.id}, 'confirmada')" title="Confirmar reserva">
+                                            ✓ Confirmar
+                                        </button>
+                                    ` : ''}
+                                    ${estado !== 'cancelada' ? `
+                                        <button type="button" class="btn-mini cancel" onclick="cambiarEstadoReserva(${r.id}, 'cancelada')" title="Cancelar reserva">
+                                            ✕ Cancelar
+                                        </button>
+                                    ` : ''}
+                                    <button type="button" class="btn-mini delete" onclick="eliminarReserva(${r.id})" title="Eliminar definitivamente">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            function calcularNoches(f1, f2) {
+                if (!f1 || !f2) return 1;
+                const d1 = new Date(f1);
+                const d2 = new Date(f2);
+                const diffTime = Math.abs(d2 - d1);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays > 0 ? diffDays : 1;
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function mostrarAlertaDashboard(tipo, mensaje) {
+                dashboardAlert.className = `alerta-box alerta-${tipo} visible`;
+                dashboardAlert.style.display = 'block';
+                dashboardAlert.innerHTML = mensaje;
+                setTimeout(() => {
+                    dashboardAlert.style.display = 'none';
+                }, 4000);
+            }
+
+            // 7. Acciones sobre una reserva
+            window.cambiarEstadoReserva = async function(id, nuevoEstado) {
+                const token = getToken();
+                try {
+                    const res = await fetch(`/api/reservas/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ estado: nuevoEstado })
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        const idx = todasLasReservas.findIndex(r => r.id == id);
+                        if (idx !== -1) {
+                            todasLasReservas[idx].estado = nuevoEstado;
+                        }
+                        actualizarMetricas(todasLasReservas);
+                        renderizarTabla();
+                        mostrarAlertaDashboard('exito', `Reserva #${id} actualizada a <strong>${nuevoEstado}</strong>.`);
+                    } else {
+                        mostrarAlertaDashboard('error', 'Error al actualizar: ' + (data.message || data.error));
+                    }
+                } catch (err) {
+                    mostrarAlertaDashboard('error', 'Error de red: ' + err.message);
+                }
+            };
+
+            window.eliminarReserva = async function(id) {
+                if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente la reserva #${id}? Esta acción no se puede deshacer.`)) {
+                    return;
+                }
+
+                const token = getToken();
+                try {
+                    const res = await fetch(`/api/reservas/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        todasLasReservas = todasLasReservas.filter(r => r.id != id);
+                        actualizarMetricas(todasLasReservas);
+                        renderizarTabla();
+                        mostrarAlertaDashboard('exito', `Reserva #${id} eliminada exitosamente.`);
+                    } else {
+                        mostrarAlertaDashboard('error', 'No se pudo eliminar: ' + (data.message || data.error));
+                    }
+                } catch (err) {
+                    mostrarAlertaDashboard('error', 'Error de red: ' + err.message);
+                }
+            };
+
+            // 8. Exportar a CSV (Excel compatible)
+            btnExportCsv?.addEventListener('click', () => {
+                if (!todasLasReservas || todasLasReservas.length === 0) {
+                    alert('No hay reservas para exportar.');
+                    return;
+                }
+
+                let csv = 'ID,Fecha_Registro,Nombre,Email,Telefono,Habitacion,Check_In,Check_Out,Huespedes,Estado,Mensaje\n';
+                todasLasReservas.forEach(r => {
+                    const linea = [
+                        r.id,
+                        `"${(r.created_at || '').replace(/"/g, '""')}"`,
+                        `"${(r.nombre || '').replace(/"/g, '""')}"`,
+                        `"${(r.email || '').replace(/"/g, '""')}"`,
+                        `"${(r.telefono || '').replace(/"/g, '""')}"`,
+                        `"${(r.habitacion || '').replace(/"/g, '""')}"`,
+                        `"${(r.fecha_entrada || '').replace(/"/g, '""')}"`,
+                        `"${(r.fecha_salida || '').replace(/"/g, '""')}"`,
+                        r.huespedes || 1,
+                        `"${(r.estado || 'pendiente').replace(/"/g, '""')}"`,
+                        `"${(r.mensaje || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+                    ].join(',');
+                    csv += linea + '\n';
+                });
+
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Reservas_Hotel_Paraiso_Tame_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+            });
+
+            // 9. Eventos de búsqueda y filtros
+            filterSearch?.addEventListener('input', renderizarTabla);
+            filterStatus?.addEventListener('change', renderizarTabla);
+            btnRefresh?.addEventListener('click', cargarReservas);
+
+            // Iniciar
+            verificarSesion();
+        });
+    </script>
+</body>
+</html>

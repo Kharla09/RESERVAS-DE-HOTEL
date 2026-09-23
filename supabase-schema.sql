@@ -28,26 +28,41 @@ CREATE INDEX IF NOT EXISTS idx_reservas_estado ON public.reservas(estado);
 ALTER TABLE public.reservas ENABLE ROW LEVEL SECURITY;
 
 -- 4. Políticas de Acceso (RLS)
--- Permitir a la web pública (clientes) enviar reservas
+-- A. Permitir a la web pública (huéspedes / clientes) registrar reservas:
 CREATE POLICY "Permitir a cualquier usuario crear reservas"
 ON public.reservas
 FOR INSERT
 TO public
 WITH CHECK (true);
 
--- Permitir consultar reservas (lectura)
-CREATE POLICY "Permitir consultar reservas"
+-- B. Restricción de Lectura:
+-- Para máxima privacidad, sólo el backend autenticado o usuarios administradores
+-- con sesión activa de Supabase pueden consultar los datos de las reservas.
+CREATE POLICY "Permitir solo a administradores consultar reservas"
 ON public.reservas
 FOR SELECT
-TO public
+TO authenticated
 USING (true);
 
--- Permitir actualizar estado de reservas (si se desea)
-CREATE POLICY "Permitir actualizar reservas"
+-- C. Restricción de Actualización:
+CREATE POLICY "Permitir solo a administradores actualizar reservas"
 ON public.reservas
 FOR UPDATE
-TO public
+TO authenticated
 USING (true);
+
+-- D. Restricción de Eliminación:
+CREATE POLICY "Permitir solo a administradores eliminar reservas"
+ON public.reservas
+FOR DELETE
+TO authenticated
+USING (true);
+
+-- NOTA DE PRIVACIDAD:
+-- Si ya habías ejecutado las políticas anteriores ("Permitir consultar reservas"),
+-- ejecuta este comando en el SQL Editor de Supabase para revocar la lectura pública:
+-- DROP POLICY IF EXISTS "Permitir consultar reservas" ON public.reservas;
+-- DROP POLICY IF EXISTS "Permitir actualizar reservas" ON public.reservas;
 
 -- 5. Tabla opcional de Habitaciones (para gestionar precios y disponibilidad)
 CREATE TABLE IF NOT EXISTS public.habitaciones (
